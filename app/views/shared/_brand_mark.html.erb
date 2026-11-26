@@ -1,0 +1,10 @@
+<% account = local_assigns[:account] %>
+<% if account&.logo&.attached? %>
+  <% style = ['object-fit: contain'] %>
+  <% style << "width: #{local_assigns[:width]}" if local_assigns[:width] %>
+  <% style << "height: #{local_assigns[:height]}" if local_assigns[:height] %>
+  <% style << local_assigns[:style] if local_assigns[:style] %>
+  <%= image_tag ActiveStorage::Blob.proxy_path(account.logo.blob), alt: account.name, class: local_assigns[:class], style: style.join('; ') %>
+<% else %>
+  <%= render 'shared/logo', class: local_assigns[:class], width: local_assigns[:width], height: local_assigns[:height] %>
+<% end %>

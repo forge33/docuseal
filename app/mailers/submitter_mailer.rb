@@ -318,8 +318,11 @@ class SubmitterMailer < ApplicationMailer
   end
 
   def maybe_set_custom_domain(submitter)
-    if Docuseal.multitenant? && (config = AccountConfig.find_by(account_id: submitter.account_id, key: :custom_domain))
-      @custom_domain = config.value
+    if Docuseal.multitenant?
+      config = AccountConfig.find_by(account_id: submitter.account_id, key: :custom_domain)
+      @custom_domain = config.value if config
+    else
+      @custom_domain = Docuseal.default_url_options[:host]
     end
   end
 end

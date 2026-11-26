@@ -20,7 +20,7 @@ class SetupController < ApplicationController
     @user = @account.users.new(user_params)
     @encrypted_config = EncryptedConfig.new(encrypted_config_params)
 
-    unless URI.parse(encrypted_config_params[:value].to_s).class.in?([URI::HTTP, URI::HTTPS])
+    unless Docuseal.web_url?(encrypted_config_params[:value])
       @encrypted_config.errors.add(:value, I18n.t('should_be_a_valid_url'))
 
       return render :index, status: :unprocessable_content
