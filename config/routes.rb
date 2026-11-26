@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       collection do
         resources :init, only: %i[create], controller: 'submissions'
         resources :emails, only: %i[create], controller: 'submissions', as: :submissions_emails
+        post :pdf, controller: 'submissions_pdf'
       end
     end
     resources :templates, only: %i[update show index destroy] do
@@ -201,7 +202,7 @@ Rails.application.routes.draw do
                                defaults: { status: :archived }
     resources :integration_users, only: %i[index], path: 'users/:status', controller: 'users',
                                   defaults: { status: :integration }
-    resource :personalization, only: %i[show create], controller: 'personalization_settings'
+    resource :personalization, only: %i[show create update destroy], controller: 'personalization_settings'
     resources :webhooks, only: %i[index show new create update destroy], controller: 'webhook_settings' do
       post :resend
 

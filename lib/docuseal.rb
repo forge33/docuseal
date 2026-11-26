@@ -123,4 +123,12 @@ module Docuseal
   def refresh_default_url_options!
     @default_url_options = nil
   end
+
+  def web_url?(value)
+    uri = URI.parse(value.to_s)
+
+    uri.class.in?([URI::HTTP, URI::HTTPS]) && uri.host.present?
+  rescue URI::InvalidURIError
+    false
+  end
 end

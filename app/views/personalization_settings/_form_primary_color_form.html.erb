@@ -1,0 +1,23 @@
+<% unless Docuseal.multitenant? %>
+  <% config = AccountConfig.find_or_initialize_by(account: current_account, key: AccountConfig::FORM_PRIMARY_COLOR_KEY) %>
+  <% if can?(:manage, config) %>
+    <div class="px-1 mt-4 space-y-4">
+      <%= form_for config, url: settings_personalization_path, method: :post, html: { autocomplete: 'off', class: 'flex flex-col gap-4' } do |f| %>
+        <%= f.hidden_field :key %>
+        <div class="form-control">
+          <%= f.label :value, t('primary_color'), class: 'label' %>
+          <%= f.color_field :value, value: Branding.normalize_hex(config.value) || '#291334', class: 'h-10 w-16 bg-white border border-base-300 rounded cursor-pointer' %>
+          <label class="label">
+            <span class="label-text-alt"><%= t('primary_color_hint') %></span>
+          </label>
+        </div>
+        <div class="form-control">
+          <%= f.button button_title(title: t('save'), disabled_with: t('saving')), class: 'base-button' %>
+        </div>
+      <% end %>
+      <% if config.persisted? %>
+        <%= button_to t('remove'), settings_personalization_path, method: :post, class: 'btn btn-outline btn-sm', params: { account_config: { key: AccountConfig::FORM_PRIMARY_COLOR_KEY, value: '' } } %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

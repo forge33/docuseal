@@ -237,6 +237,7 @@ en: &en
   time_zone: Time zone
   language: Language
   app_url: App URL
+  app_url_hint: Public URL used for signing links, embed links, and email links.
   update: Update
   updating: Updating
   force_2fa_with_authenticator_app: Force 2FA with Authenticator App
@@ -367,6 +368,11 @@ en: &en
   button_title: Button title
   button_url: Button URL
   upload_logo: Upload Logo
+  primary_color: Primary color
+  primary_color_hint: Hex color for signing form buttons. Remove the saved color to use the default.
+  logo_has_been_saved: Logo has been saved.
+  logo_has_been_removed: Logo has been removed.
+  invalid_color: Invalid color
   show_confetti_on_successful_completion: Show confetti on successful completion
   attach_audit_log_pdf: Attach audit log PDF
   attach_documents: Attach documents

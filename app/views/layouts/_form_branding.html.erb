@@ -1,0 +1,5 @@
+<% account = @submitter&.account || @template&.account || @submission&.account %>
+<% css = Branding.theme_css(Branding.primary_color_for(account)) if account %>
+<% if css.present? %>
+  <style id="brand-color"><%= css %></style>
+<% end %>

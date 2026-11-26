@@ -8,7 +8,7 @@ class PersonalizationSettingsController < ApplicationController
     AccountConfig::SUBMITTER_DOCUMENTS_COPY_EMAIL_KEY,
     AccountConfig::SUBMITTER_COMPLETED_EMAIL_KEY,
     AccountConfig::FORM_COMPLETED_MESSAGE_KEY,
-    *(Docuseal.multitenant? ? [] : [AccountConfig::POLICY_LINKS_KEY])
+    *(Docuseal.multitenant? ? [] : [AccountConfig::POLICY_LINKS_KEY, AccountConfig::FORM_PRIMARY_COLOR_KEY])
   ].freeze
 
   InvalidKey = Class.new(StandardError)
@@ -20,6 +20,8 @@ class PersonalizationSettingsController < ApplicationController
   end
 
   def create
+    normalize_primary_color!
+
     if @account_config.value.is_a?(Hash)
       @account_config.value = @account_config.value.reject do |_, v|
         v.blank? && v != false
@@ -33,9 +35,44 @@ class PersonalizationSettingsController < ApplicationController
     end
 
     redirect_back(fallback_location: settings_personalization_path, notice: I18n.t('settings_have_been_saved'))
+  rescue Branding::InvalidColor
+    redirect_back(fallback_location: settings_personalization_path, alert: I18n.t('invalid_color'))
+  end
+
+  def update
+    authorize!(:update, current_account)
+
+    raise ActionController::RoutingError, I18n.t('not_found') if Docuseal.multitenant?
+
+    Branding.attach_logo(current_account, params[:logo])
+
+    redirect_back(fallback_location: settings_personalization_path, notice: I18n.t('logo_has_been_saved'))
+  rescue Branding::InvalidLogo
+    redirect_back(fallback_location: settings_personalization_path, alert: I18n.t('invalid_file_type'))
+  end
+
+  def destroy
+    authorize!(:update, current_account)
+
+    raise ActionController::RoutingError, I18n.t('not_found') if Docuseal.multitenant?
+
+    current_account.logo.purge if current_account.logo.attached?
+
+    redirect_back(fallback_location: settings_personalization_path, notice: I18n.t('logo_has_been_removed'))
   end
 
   private
+
+  def normalize_primary_color!
+    return unless @account_config.key == AccountConfig::FORM_PRIMARY_COLOR_KEY
+    return if @account_config.value.blank?
+
+    normalized = Branding.normalize_hex(@account_config.value)
+
+    raise Branding::InvalidColor if normalized.nil?
+
+    @account_config.value = normalized
+  end
 
   def load_and_authorize_account_config
     @account_config =

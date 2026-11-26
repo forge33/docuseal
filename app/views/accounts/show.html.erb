@@ -32,7 +32,10 @@
         <%= fields_for encrypted_config do |ff| %>
           <div class="form-control">
             <%= ff.label :value, t('app_url'), class: 'label' %>
-            <%= ff.text_field :value, autocomplete: 'off', class: 'base-input' %>
+            <%= ff.text_field :value, autocomplete: 'off', class: 'base-input', placeholder: 'https://sign.example.com' %>
+            <label class="label">
+              <span class="label-text-alt"><%= t('app_url_hint') %></span>
+            </label>
           </div>
         <% end %>
       <% end %>

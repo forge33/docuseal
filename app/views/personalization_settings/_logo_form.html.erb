@@ -1,1 +1,28 @@
-<%= render 'logo_placeholder' %>
+<% if Docuseal.multitenant? %>
+  <%= render 'logo_placeholder' %>
+<% else %>
+  <div class="space-y-4">
+    <p>
+      <%= t('display_your_company_name_and_logo_when_signing_documents') %>
+    </p>
+    <p>
+      <%= t('company_name') %>: <span class="font-medium"><%= current_account.name %></span>
+    </p>
+    <% if current_account.logo.attached? %>
+      <div class="flex items-center gap-4">
+        <%= image_tag ActiveStorage::Blob.proxy_path(current_account.logo.blob),
+                      alt: current_account.name, class: 'h-12 w-auto', style: 'object-fit: contain' %>
+        <%= button_to t('remove'), settings_personalization_path, method: :delete, class: 'btn btn-outline btn-sm' %>
+      </div>
+    <% end %>
+    <%= form_with url: settings_personalization_path, method: :patch, html: { autocomplete: 'off', enctype: 'multipart/form-data', class: 'flex flex-col gap-4' } do |f| %>
+      <div class="form-control">
+        <%= label_tag :logo, t('upload_logo'), class: 'label' %>
+        <%= file_field_tag :logo, accept: 'image/png,image/jpeg,image/gif,image/webp', required: true, class: 'file-input file-input-bordered w-full' %>
+      </div>
+      <div class="form-control">
+        <%= f.button button_title(title: t('upload_logo'), disabled_with: t('saving')), class: 'base-button' %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

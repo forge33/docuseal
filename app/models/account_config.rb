@@ -38,6 +38,7 @@ class AccountConfig < ApplicationRecord
   FORM_COMPLETED_BUTTON_KEY = 'form_completed_button'
   FORM_COMPLETED_MESSAGE_KEY = 'form_completed_message'
   FORM_WITH_CONFETTI_KEY = 'form_with_confetti'
+  FORM_PRIMARY_COLOR_KEY = 'form_primary_color'
   FORM_PREFILL_SIGNATURE_KEY = 'form_prefill_signature'
   ESIGNING_PREFERENCE_KEY = 'esigning_preference'
   DOWNLOAD_LINKS_AUTH_KEY = 'download_links_auth'
